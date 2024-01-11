@@ -1,0 +1,16 @@
+src/
+	data/
+		constant/
+			url.const.ts
+		models/
+			file.model.ts
+			user.model.ts
+		repositories/
+			file.repo.ts
+	logic/
+		helpers/
+			avatar.helper.ts
+		auth.logic.ts
+		auth.class.ts
+	main.ts
+			
