@@ -9,6 +9,7 @@ export interface FileLike {
 	user?: string;
 	id?: string;
 	time?: number;
+	type?: string;
 	access?: string;
 	permission?: string;
 	isParent?: boolean;
@@ -26,6 +27,7 @@ export class FileModel extends Model<FileLike> implements FileLike {
 	id: string = "";
 	time: number = Date.now();
 	access: string = "r";
+	type: string = "";
 	permission: string = "r";
 	isParent: boolean = false;
 }

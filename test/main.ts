@@ -13,7 +13,11 @@ Scriff.auth.login('mishy', 'pass', 'ssn9n14l1W1tb26Bf8429d6tQ5341MbMjsB759od9691
 		const file = Scriff.fs.file('mishy:main.js');
 
 
-		console.log(await file.read());
+		// console.log(await file.read());
+
+		console.log(await Scriff.fs.ls('mishy', {
+			namesOnly: true
+		}));
 
 		// const remote = await Scriff.remote.create({
 		// 	username: 'mishy',

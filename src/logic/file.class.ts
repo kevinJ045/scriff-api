@@ -1,6 +1,9 @@
 import { ScriffFile } from "../data/entities/file.entity";
 import { User } from "../data/entities/user.entity";
+import { FileLike } from "../data/models/file.model";
+import { username } from "../data/types/auth.type";
 import { CommonClass } from "./base.class";
+import { file_logic_ls, file_logic_sortFiles } from "./file.logic";
 import { Path } from "./utils/path.util";
 
 const fileFromName = (filename: string | ScriffFile) => filename instanceof ScriffFile ? filename : new ScriffFile().fromJson({
@@ -8,6 +11,47 @@ const fileFromName = (filename: string | ScriffFile) => filename instanceof Scri
 });
 
 export class FS extends CommonClass {
+
+	async ls(username: username, {
+		folderName,
+		allFiles,
+		sort,
+		namesOnly,
+		special,
+	} : {
+		namesOnly?: boolean,
+		folderName?: string | null,
+		special?: boolean,
+		sort?: boolean,
+		allFiles?: boolean
+	} = {
+		folderName: null,
+		allFiles: false,
+		sort: false,
+		namesOnly: false,
+		special: false
+	}, token?: string){
+		if(folderName == "/") folderName = null;
+
+		if(allFiles == undefined) allFiles = false;
+		if(special == undefined) special = false;
+		if(sort == undefined) sort = false;
+		if(namesOnly == undefined) namesOnly = false;
+
+		return await file_logic_ls(this._self, {
+			user: username,
+			parent: folderName,
+			onlynames: namesOnly,
+			special,
+			sort,
+			showParents: !allFiles,
+			token
+		});
+	}
+
+	sort(files: FileLike[]){
+		return file_logic_sortFiles(files);
+	}
 
 	file(filename: string | ScriffFile){
 		return fileFromName(filename);

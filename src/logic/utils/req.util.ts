@@ -9,7 +9,7 @@ export const Req = {
 				'Content-Type': 'application/json',
 				[withToken ? 'token' : 'no_token']: typeof withToken == "string" ? withToken : ""
 			},
-			data: data ? JSON.stringify(data) : null
+			data: data || {}
 		}).then(r => r.data);
 	},
 

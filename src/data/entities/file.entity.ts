@@ -65,7 +65,7 @@ export class ScriffFile extends FileModel {
 	}
 
 	async exists(user?: User){
-		var file = await readFile(Path.fileToPath(this), true, user);
+		var file = await readFile(Path.fileToPath(this), user);
 		return file && !file.failed;
 	}
 
