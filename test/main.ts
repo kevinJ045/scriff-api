@@ -1,4 +1,4 @@
-import Scriff from "../src/main";
+import Scriff from "../src";
 
 console.clear();
 

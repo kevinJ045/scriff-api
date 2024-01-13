@@ -1,6 +1,7 @@
 import { ScriffFile } from "../data/entities/file.entity";
 import { FileLike } from "../data/models/file.model";
 import { ScriffType } from "../data/types/scriff.type";
+import md5 from "./helpers/md5";
 import { Req } from "./utils/req.util";
 
 
@@ -13,7 +14,7 @@ export async function file_logic_ls(self: ScriffType, {
 	special,
 	onlynames,
 	token
-}){
+} : any){
 	if(!user) user = self.user.getUser().username;
 	if(!token) token = self.user.getUser().token || "";
 	let files: { container: { files:  (FileLike | string)[] } } | (FileLike | string)[] = onlynames ? await Req.get(self.url.api((user ? 'users/' + user : 'self') + '/files/names?show_parent='+showParents+(parent ? '&parent='+parent : '')), token) : await Req.get(self.url.api((user ? 'users/' + user : 'self') + '/all'), token);
@@ -64,9 +65,9 @@ export async function file_logic_ls(self: ScriffType, {
 	if(special === true){
 		let fileList = {};
 		_files.sort((a: FileLike, b: FileLike) => a.isParent ? -1 : (b.isParent ? -1 : 1)).forEach(file => {
-			fileList[file.id] = file;
+			(fileList as any)[file.id] = file;
 			if(file.isParent){
-				fileList[file.id].children = (all as FileLike[]).filter((f: FileLike) => f.parent == file.id).map(_convert);
+				(fileList as any)[file.id].children = (all as FileLike[]).filter((f: FileLike) => f.parent == file.id).map(_convert);
 			}
 		});
 		return fileList;
@@ -87,4 +88,18 @@ export function file_logic_sortFiles(files: (FileLike)[]){
 		const nameB = b.name.toUpperCase();
 		return a.type == 'parent' ? (nameA < nameB ? -1 : (nameA > nameB ? 1 : 0)) : 0;
 	});
+}
+
+
+export async function file_logic_getLength(self: ScriffType, file: FileLike, token?: string){
+	return parseInt(await Req.get<string>(self.url.api('users/'+(file.user || self.user.getUser().username)+"/files/"+file.name+'/length'), token));
+}
+
+
+export async function file_logic_getMD5(self: ScriffType, file: FileLike, token?: string){
+	return await Req.get<string>(self.url.api('users/'+(file.user || self.user.getUser().username)+"/files/"+file.name+'/md5/'+md5(file.content)), token);
+}
+
+export async function file_logic_permFile(self: ScriffType, username: string, id: string, permission: string, token?: string) {
+	return await Req.post(self.url.api('/file/permission/'+username+'/'+id+'/'), {username, permission}, token);
 }

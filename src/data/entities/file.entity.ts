@@ -1,9 +1,11 @@
+import { file_logic_permFile } from "../../logic/file.logic";
 import { createFile } from "../../logic/helpers/createFile";
 import { unlink } from "../../logic/helpers/deleteFile";
 import { readFile } from "../../logic/helpers/readFile";
 import { updateFile } from "../../logic/helpers/updateFile";
 import { Path } from "../../logic/utils/path.util";
 import { FileLike, FileModel } from "../models/file.model";
+import { UserLike } from "../models/user.model";
 import FileType, { shebangRegex } from "../types/files.type";
 import { User } from "./user.entity";
 

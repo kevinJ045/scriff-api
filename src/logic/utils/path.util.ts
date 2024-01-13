@@ -1,4 +1,4 @@
-import Scriff from "../../main";
+import Scriff from "../..";
 
 export class Path {
 

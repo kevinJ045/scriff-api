@@ -1,5 +1,5 @@
 import { User } from "../../data/entities/user.entity";
-import Scriff from "../../main";
+import Scriff from "../..";
 import { Req } from "../utils/req.util";
 
 

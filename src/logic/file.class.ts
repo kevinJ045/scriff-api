@@ -3,7 +3,7 @@ import { User } from "../data/entities/user.entity";
 import { FileLike } from "../data/models/file.model";
 import { username } from "../data/types/auth.type";
 import { CommonClass } from "./base.class";
-import { file_logic_ls, file_logic_sortFiles } from "./file.logic";
+import { file_logic_getLength, file_logic_getMD5, file_logic_ls, file_logic_permFile, file_logic_sortFiles } from "./file.logic";
 import { Path } from "./utils/path.util";
 
 const fileFromName = (filename: string | ScriffFile) => filename instanceof ScriffFile ? filename : new ScriffFile().fromJson({
@@ -99,6 +99,33 @@ export class FS extends CommonClass {
 		await file.read(true, user);
 		await file.setName(name, user);
 		return file;
+	}
+
+	async size(filename: string | ScriffFile, user?: User){
+		const file = fileFromName(filename);
+		await file.read(true, user);
+		file.size = 0;
+		return file;
+	}
+
+	async length(filename: string | ScriffFile, user?: User){
+		const file = fileFromName(filename);
+		await file.read(true, user);
+		return await file_logic_getLength(this._self, file, user?.token);
+	}
+
+	async hasChange(file: ScriffFile, user?: User){
+		return (await file_logic_getMD5(this._self, file, user?.token)) == 'true';
+	}
+
+	async setPermission(file: ScriffFile, user: string, perm: string, asUser?: User){
+		let permission = file.permission || "";
+		permission = permission.replace(new RegExp(user+":([a-zA-Z]+);"), '');
+		if(perm != 'rm'){
+			if(['a', 'r', 'w', 'n'].includes(perm)) permission += user+":"+perm+";"
+		}
+		file.permission = permission;
+		await file_logic_permFile(this._self, user, file.id, perm, asUser?.token);
 	}
 
 }
